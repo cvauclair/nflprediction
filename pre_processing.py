@@ -23,13 +23,14 @@ def process_data(filename):
                                                 team_raw_data[team_raw_data.columns[team_raw_data.columns.str.contains('home')]], 
                                                 team_raw_data[team_raw_data.columns[team_raw_data.columns.str.contains('away')]]), index=team_raw_data.index, columns=features)
 
-        # Calculate running average of stats for each teams 
+        # Calculate running average of stats for each teams
         team_data[team] = team_good_data.expanding().mean()
 
         # Make data the previous game's data and add the first game to the list of games to drop
         team_data[team] = team_data[team].shift(1)
         games_to_drop.append(team_data[team].index[0])
 
+        # Add extra data labels
         team_data[team]['win'] = 0
         team_data[team]['tie'] = 0
         team_data[team]['loss'] = 0
@@ -53,6 +54,10 @@ def process_data(filename):
         team_data[winning_team].loc[index,'win'] = 1
         team_data[losing_team].loc[index, 'loss'] = 1
 
+    # Add team labels
+    for team in teams:
+        team_data[team]['team'] = team
+
     # Combine data for all games and drop first games
     all_data = pd.concat([team_data[team] for team in teams])
     all_data.drop(games_to_drop, inplace=True)
@@ -62,11 +67,12 @@ def process_data(filename):
 def standardize_data(data):
     # Standarize data (skip win/tie/loss)
     sd_scaler = preprocessing.StandardScaler()
-    standardized_data = pd.DataFrame(sd_scaler.fit_transform(data.drop(['win', 'tie', 'loss'], axis='columns')),
+    standardized_data = pd.DataFrame(sd_scaler.fit_transform(data.drop(['win', 'tie', 'loss', 'team'], axis='columns')),
                                      index=data.index, 
-                                     columns=data.columns.drop(['win', 'tie', 'loss']))
+                                     columns=data.columns.drop(['win', 'tie', 'loss', 'team']))
 
     # Add back win/tie/loss
+    standardized_data['team'] = data['team']
     standardized_data['win'] = data['win']
     standardized_data['tie'] = data['tie']
     standardized_data['loss'] = data['loss']
@@ -75,11 +81,11 @@ def standardize_data(data):
     return standardized_data
 
 processed = []
-for season in range(1966, 1975):
+for season in range(1966, 1990):
     processed.append(process_data('data/raw/{}_games.csv'.format(season)))
 
 all_processed = pd.concat(processed)
 standardized_data = standardize_data(all_processed)
-print(standardized_data)
+# print(standardized_data)
 standardized_data.to_csv('data/processed.csv')
 # print(process_data('data/raw/1966_games.csv'))

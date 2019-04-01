@@ -16,7 +16,7 @@ Then for every match up between a team A and a team B, the average stats to date
 
 Finally, the differences in average stats to date were standardized.
 
-The final processed data can be found at `data/processed.csv` (note that the first column is the code of the game, and the 'label' column is the name of team A).
+The final processed data can be found at `data/processed.csv` (note that the first column is the code of the game, and the `team` column is the name of team A).
 
 # Dependencies
 This project depends on the following python packages: `pytorch`, `numpy`, `scikit-learn` and `sportsreference`.

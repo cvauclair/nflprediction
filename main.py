@@ -60,8 +60,8 @@ data = pd.read_csv("data/processed.csv", index_col=0)
 data.dropna(axis='columns', how='any', inplace=True)
 
 # Isolate season 1980 data
-season_1980_data = data[data.index.str.contains('198009|198010|198011|198012|198101|198102')]
-data = data[~data.index.str.contains('198009|198010|198011|198012|198101|198102')]
+# season_1980_data = data[data.index.str.contains('198009|198010|198011|198012|198101|198102')]
+# data = data[~data.index.str.contains('198009|198010|198011|198012|198101|198102')]
 
 # Training data
 y_data = data[['win', 'tie', 'loss']]
@@ -98,23 +98,3 @@ loss = validation.holdout_validation(model=model, dataset=dataset, testing_ratio
 end_time = datetime.now()
 
 print("Model (1HL size {}) accuracy: {:.4f} % ({})".format(n, 100 * (1.0-loss), end_time - start_time))
-
-# Try to predict 1980 games
-# y_data_1980 = season_1980_data[['win', 'tie', 'loss']]
-# x_data_1980 = season_1980_data.drop(['win', 'tie', 'loss', 'team'], axis='columns')
-
-# # Create dataset
-# x_tensor_1980 = torch.Tensor(x_data_1980.values).to(device)
-# print(x_tensor_1980)
-# y_prime_1980 = torch.argmax(model(x_tensor_1980), dim=1)
-# print(y_prime_1980)
-
-# for i, y in enumerate(y_prime_1980.tolist()):
-# 	if y == 0:
-# 		print("Game {}: {} won".format(season_1980_data.index[i], season_1980_data.loc[season_1980_data.index[i], 'team'].values[0]))
-# 	elif y == 1:
-# 		print("Game {}: {} tied".format(season_1980_data.index[i], season_1980_data.loc[season_1980_data.index[i], 'team'].values[0]))
-# 	elif y == 2:
-# 		print("Game {}: {} lost".format(season_1980_data.index[i], season_1980_data.loc[season_1980_data.index[i], 'team'].values[0]))
-# 	else:
-# 		pass

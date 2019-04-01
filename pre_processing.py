@@ -5,6 +5,9 @@ from sklearn import preprocessing
 def process_data(filename):
     raw = pd.read_csv(filename, index_col=0)
 
+    # Drop 'away_time_of_possession' and 'home_time_of_possession' as time data is not handle yet
+    raw.drop(['away_time_of_possession', 'home_time_of_possession'], axis='columns', inplace=True)
+
     # Get list of team abbreviations
     teams = np.union1d(raw['losing_abbr'].unique(), raw['winning_abbr'].unique())
 
@@ -81,7 +84,7 @@ def standardize_data(data):
     return standardized_data
 
 processed = []
-for season in range(1966, 1990):
+for season in range(1966, 1995):
     processed.append(process_data('data/raw/{}_games.csv'.format(season)))
 
 all_processed = pd.concat(processed)

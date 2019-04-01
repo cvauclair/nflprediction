@@ -83,8 +83,13 @@ def standardize_data(data):
     # normalized_data.to_csv("data/1966_processed.csv")
     return standardized_data
 
+
+# Program
+season_start = 1966
+season_end = 1996
+
 processed = []
-for season in range(1966, 1995):
+for season in range(season_start, season_end):
     processed.append(process_data('data/raw/{}_games.csv'.format(season)))
 
 all_processed = pd.concat(processed)
